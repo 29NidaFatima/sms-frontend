@@ -1,5 +1,4 @@
 "use server";
-
 import { PropsWithChildren } from "react";
 import { auth0 } from "@/lib/auth0";
 import { AppShell, AppShellMain, AppShellNavbar, Box } from "@mantine/core";

@@ -32,7 +32,6 @@ export default function RootLayout({ children }: PropsWithChildren) {
       <head>
         <ColorSchemeScript />
       </head>
-
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <QueryClientProvider client={queryClient}>
           <MantineProvider
