@@ -1,6 +1,7 @@
 "use client";
 
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 import "mantine-datatable/styles.layer.css";
 
 import {
@@ -32,7 +33,6 @@ export default function RootLayout({ children }: PropsWithChildren) {
       <head>
         <ColorSchemeScript />
       </head>
-
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <QueryClientProvider client={queryClient}>
           <MantineProvider

@@ -7,6 +7,9 @@ import { axiosAuthenticatedClient } from "@/lib/axios";
 
 interface IParams<TVariable, TData, TError> {
   resource: string;
+  /**
+   * This flag automatically converts JSON to form data.
+   */
   useFormData?: boolean;
   onSuccess?: (data: TData, params?: TVariable) => void;
   onError?: (error: TError, params?: TVariable) => void;

@@ -30,6 +30,10 @@ import {
   Tooltip,
 } from "@mantine/core";
 
+
+export const theme = createTheme({
+  primaryColor: "blue",
+});
 const CONTAINER_SIZES: Record<string, string> = {
   xxs: rem("200px"),
   xs: rem("300px"),
@@ -528,8 +532,8 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
           "--sc-color": props.color
             ? Object.keys(theme.colors).includes(props.color)
               ? ["zinc", "slate", "gray", "neutral", "stone"].includes(
-                  props.color,
-                )
+                props.color,
+              )
                 ? "var(--mantine-color-body)"
                 : `var(--mantine-color-${props.color}-filled)`
               : props.color

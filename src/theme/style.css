@@ -15,7 +15,7 @@
         &:disabled {
             opacity: 0.5;
 
-            & + .mantine-Checkbox-icon {
+            &+.mantine-Checkbox-icon {
                 opacity: 0.5;
                 color: var(--checkbox-icon-color);
             }
@@ -33,7 +33,7 @@
         .mantine-Checkbox-input {
             background-color: transparent;
 
-            & + .mantine-Checkbox-icon {
+            &+.mantine-Checkbox-icon {
                 color: var(--checkbox-color);
             }
         }
@@ -110,6 +110,7 @@
     border-color: var(--mantine-color-default-border);
 }
 
+
 /* Fieldset */
 .mantine-Fieldset-root {
     border-color: var(--mantine-color-default-border);
@@ -137,7 +138,7 @@
             border-color: var(--radio-color);
         }
 
-        & + .mantine-Radio-icon {
+        &+.mantine-Radio-icon {
             color: var(--radio-icon-color);
         }
 
@@ -159,7 +160,7 @@
             &:disabled {
                 opacity: 0.5;
 
-                & + .mantine-Radio-icon {
+                &+.mantine-Radio-icon {
                     color: var(--radio-color);
                     --radio-icon-opacity: 0.5;
                 }
@@ -749,6 +750,13 @@
         }
     }
 }
+
+
+.custom-calendar-nav svg {
+    width: 16px !important;
+    height: 16px !important;
+}
+
 
 /* Spotlight */
 .mantine-Spotlight-root {
