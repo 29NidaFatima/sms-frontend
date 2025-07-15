@@ -9,6 +9,7 @@ import {
   Text,
   ThemeIcon,
   Group,
+  Divider,
 } from "@mantine/core";
 import {
   IconLayoutDashboard,
@@ -40,68 +41,75 @@ export function AppNavbar() {
 
   return (
     <Box
-      py="xs"
-      pl="xs"
+      px="sm"
+      py="md"
       style={{
         width: 240,
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
         justifyContent: "space-between",
+        backgroundColor: "#f8f9fa",
+        borderRight: "1px solid #dee2e6",
       }}
     >
-      {/* Top Section */}
+      {/* Brand + Navigation */}
       <Box>
         {/* Brand */}
-        <Button
-          size="lg"
+        <Box
           px="xs"
-          fullWidth
-          justify="left"
-          variant="subtle"
-          radius="md"
-          component={Link}
-          href="/"
+          py={8}
+          mb="lg"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            background:
+              "linear-gradient(to right, rgba(13, 110, 253, 0.1), rgba(108, 117, 125, 0.05))",
+            borderRadius: 8,
+          }}
         >
-          <Group>
-            <ThemeIcon size={24} radius="xl" variant="light" color="black">
-              <IconBuildingCommunity size={16} />
-            </ThemeIcon>
-            <Text fw={700} size="lg" c="black">
-              SMS Inc.
-            </Text>
-          </Group>
-        </Button>
+          <ThemeIcon size={30} radius="xl" color="indigo" variant="light">
+            <IconBuildingCommunity size={18} />
+          </ThemeIcon>
+          <Text fw={700} size="lg" c="indigo" style={{ letterSpacing: 0.5 }}>
+            SMS Inc.
+          </Text>
+        </Box>
 
-        {/* Navigation */}
-        <Stack mt="xl" gap="xs">
-          <Text px="xs" size="sm" fw={600} c="black">
+        {/* Main Nav */}
+        <Stack gap="sm">
+          <Text px="xs" size="xs" fw={600} c="gray.6" tt="uppercase" mb={2}>
             Platform
           </Text>
 
-          <Stack gap={4}>
+          <Stack gap={5}>
             {navItems.map(({ label, icon: Icon, path }) => {
               const isActive = pathname === path;
               return (
                 <Button
                   key={path}
                   onClick={() => router.push(path)}
-                  variant="subtle"
+                  variant="light"
                   fullWidth
-                  justify="left"
                   radius="md"
                   size="sm"
+                  justify="left"
                   px="xs"
-                  style={{
-                    fontWeight: 500,
-                    backgroundColor: isActive ? "#000" : undefined,
-                    color: isActive ? "white" : "black",
+                  styles={{
+                    root: {
+                      fontWeight: isActive ? 600 : 500,
+                      backgroundColor: isActive ? "#edf2ff" : "#fff",
+                      borderLeft: isActive ? "3px solid #1c7ed6" : "3px solid transparent",
+                      color: "#212529",
+                      transition: "background-color 0.2s ease",
+                    },
                   }}
                   leftSection={
                     <ThemeIcon
                       size={20}
+                      color={isActive ? "indigo" : "gray"}
                       variant="light"
-                      color={isActive ? "white" : "black"}
                     >
                       <Icon size={16} />
                     </ThemeIcon>
@@ -115,20 +123,31 @@ export function AppNavbar() {
         </Stack>
       </Box>
 
-      {/* Bottom Section */}
-      <Stack gap={4} px="xs" mb="xs">
+      {/* Footer */}
+      <Stack gap="xs" px="xs" mb="md">
+        <Divider />
+
         {footerItems.map(({ label, icon: Icon, path }) => (
           <Button
             key={path}
             onClick={() => router.push(path)}
-            variant="subtle"
+            variant="light"
             fullWidth
-            justify="left"
             radius="md"
             size="sm"
-            style={{ color: "black" }}
+            justify="left"
+            px="xs"
+            styles={{
+              root: {
+                fontSize: "13px",
+                color: "#495057",
+                "&:hover": {
+                  backgroundColor: "#f1f3f5",
+                },
+              },
+            }}
             leftSection={
-              <ThemeIcon size={20} variant="light" color="black">
+              <ThemeIcon size={20} color="gray" variant="light">
                 <Icon size={16} />
               </ThemeIcon>
             }
@@ -137,12 +156,12 @@ export function AppNavbar() {
           </Button>
         ))}
 
-        {/* Signature Block */}
+        {/* Signature */}
         <Box pt="sm" style={{ borderTop: "1px solid #e9ecef" }}>
           <Text size="xs" c="dimmed">
             📧 nida@example.com
           </Text>
-          <Text size="xs" fw={500}>
+          <Text size="xs" fw={400} c="gray.6">
             Made by Nida
           </Text>
         </Box>
