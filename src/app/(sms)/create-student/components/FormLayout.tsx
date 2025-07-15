@@ -1,37 +1,41 @@
 "use client";
 
 import {
-  Container,
-  Paper,
-  Title,
-  Select,
-  Button,
-  Group,
-  Notification,
-  Stack,
-  Flex,
   Box,
-  Text,
-  TextInput,
+  Button,
+  Container,
+  Flex,
   Grid,
   GridCol,
+  Group,
+  Notification,
+  Paper,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+  Title,
 } from "@mantine/core";
 import { Dropzone } from "@mantine/dropzone";
 import { IconUpload, IconUser } from "@tabler/icons-react";
 import { DateInput } from "@mantine/dates";
-import { useForm, zodResolver } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import { useCreate } from "@/hooks/useCreate";
 import { studentSchema } from "../../../../lib/schema";
 import { useEffect } from "react";
+import { zod4Resolver } from "mantine-form-zod-resolver";
+import { z } from "zod";
+
+type IFormValues = z.infer<typeof studentSchema>;
 
 export default function FormLayout() {
-  const mutation = useCreate<FormData>({
+  const mutation = useCreate<IFormValues>({
     resource: "/student",
     useFormData: true,
   });
 
-  const form = useForm({
-    validate: zodResolver(studentSchema),
+  const form = useForm<IFormValues>({
+    validate: zod4Resolver(studentSchema),
     initialValues: {
       firstName: "",
       lastName: "",
@@ -79,7 +83,7 @@ export default function FormLayout() {
                 style={{ width: "160px" }}
                 {...form.getInputProps("academicYearId")}
               />
-              <Button color="dark" size="sm" style={{ width: "140px" }}>
+              <Button size="sm" style={{ width: "140px" }}>
                 Quick Create
               </Button>
             </Group>
@@ -92,16 +96,28 @@ export default function FormLayout() {
               if (!values.dateOfBirth || isNaN(values.dateOfBirth.getTime())) {
                 errors.dateOfBirth = "Valid date of birth is required";
               }
-              if (!values.admissionDate || isNaN(values.admissionDate.getTime())) {
+              if (
+                !values.admissionDate ||
+                isNaN(values.admissionDate.getTime())
+              ) {
                 errors.admissionDate = "Valid admission date is required";
               }
-              if (!values.photoFile?.length || !(values.photoFile[0] instanceof File)) {
+              if (
+                !values.photoFile?.length ||
+                !(values.photoFile[0] instanceof File)
+              ) {
                 errors.photoFile = "Valid student photo is required";
               }
-              if (!values.adhaarFile?.length || !(values.adhaarFile[0] instanceof File)) {
+              if (
+                !values.adhaarFile?.length ||
+                !(values.adhaarFile[0] instanceof File)
+              ) {
                 errors.adhaarFile = "Valid Aadhar file is required";
               }
-              if (!values.dateOfBirthFile?.length || !(values.dateOfBirthFile[0] instanceof File)) {
+              if (
+                !values.dateOfBirthFile?.length ||
+                !(values.dateOfBirthFile[0] instanceof File)
+              ) {
                 errors.dateOfBirthFile = "Valid DOB proof file is required";
               }
 
@@ -110,18 +126,7 @@ export default function FormLayout() {
                 return;
               }
 
-              const formData = new FormData();
-              Object.entries(values).forEach(([key, val]) => {
-                if (key.endsWith("File") && Array.isArray(val)) {
-                  formData.append(key, val[0]);
-                } else if (val instanceof Date) {
-                  formData.append(key, val.toISOString());
-                } else {
-                  formData.append(key, val?.toString() || "");
-                }
-              });
-
-              mutation.mutate(formData);
+              mutation.mutate(values);
             })}
           >
             <Stack gap="md">
@@ -137,12 +142,19 @@ export default function FormLayout() {
                     </Title>
                     <Dropzone
                       onDrop={(files) => {
-                        const validFiles = files.filter(f => f instanceof File);
+                        const validFiles = files.filter(
+                          (f) => f instanceof File,
+                        );
                         form.setFieldValue("photoFile", validFiles);
                         form.clearFieldError("photoFile");
                       }}
                       maxFiles={1}
-                      accept={["image/png", "image/jpeg", "image/svg+xml", "image/gif"]}
+                      accept={[
+                        "image/png",
+                        "image/jpeg",
+                        "image/svg+xml",
+                        "image/gif",
+                      ]}
                       style={{
                         height: 160,
                         backgroundColor: "#f8f9fa",
@@ -154,29 +166,44 @@ export default function FormLayout() {
                         justifyContent: "center",
                       }}
                     >
-                      <Box bg="#f1f3f5" p="sm" radius="md">
+                      <Box bg="#f1f3f5" p="sm">
                         <IconUpload size={30} stroke={1.5} />
                       </Box>
                       <Text mt="sm" ta="center">
                         <strong>Click to upload</strong> or drag and drop
                       </Text>
-                      {form.errors.photoFile && <Text c="red">{form.errors.photoFile}</Text>}
+                      {form.errors.photoFile && (
+                        <Text c="red">{form.errors.photoFile}</Text>
+                      )}
                     </Dropzone>
                   </Box>
                   <Box style={{ flex: 1 }}>
                     <Grid gutter="md">
                       <GridCol span={4}>
-                        <TextInput label="First Name" required {...form.getInputProps("firstName")} />
+                        <TextInput
+                          label="First Name"
+                          required
+                          {...form.getInputProps("firstName")}
+                        />
                       </GridCol>
                       <GridCol span={4}>
-                        <TextInput label="Last Name" required {...form.getInputProps("lastName")} />
+                        <TextInput
+                          label="Last Name"
+                          required
+                          {...form.getInputProps("lastName")}
+                        />
                       </GridCol>
                       <GridCol span={4}>
                         <DateInput
                           label="Date of Birth"
                           required
                           value={form.values.dateOfBirth}
-                          onChange={(value) => form.setFieldValue("dateOfBirth", value ? new Date(value) : null)}
+                          onChange={(value) =>
+                            form.setFieldValue(
+                              "dateOfBirth",
+                              value ? new Date(value) : null,
+                            )
+                          }
                           error={form.errors.dateOfBirth}
                         />
                       </GridCol>
@@ -197,10 +224,18 @@ export default function FormLayout() {
                         />
                       </GridCol>
                       <GridCol span={5}>
-                        <TextInput label="Aadhar Number" required {...form.getInputProps("adhaarNumber")} />
+                        <TextInput
+                          label="Aadhar Number"
+                          required
+                          {...form.getInputProps("adhaarNumber")}
+                        />
                       </GridCol>
                       <GridCol span={5}>
-                        <TextInput label="Address" required {...form.getInputProps("address")} />
+                        <TextInput
+                          label="Address"
+                          required
+                          {...form.getInputProps("address")}
+                        />
                       </GridCol>
                     </Grid>
                   </Box>
@@ -214,7 +249,9 @@ export default function FormLayout() {
                   <Box w="50%">
                     <Dropzone
                       onDrop={(files) => {
-                        const validFiles = files.filter(f => f instanceof File);
+                        const validFiles = files.filter(
+                          (f) => f instanceof File,
+                        );
                         form.setFieldValue("adhaarFile", validFiles);
                         form.clearFieldError("adhaarFile");
                       }}
@@ -222,13 +259,17 @@ export default function FormLayout() {
                       accept={["application/pdf", "image/png", "image/jpeg"]}
                     >
                       <Text>Aadhar File (PDF/Image)</Text>
-                      {form.errors.adhaarFile && <Text c="red">{form.errors.adhaarFile}</Text>}
+                      {form.errors.adhaarFile && (
+                        <Text c="red">{form.errors.adhaarFile}</Text>
+                      )}
                     </Dropzone>
                   </Box>
                   <Box w="50%">
                     <Dropzone
                       onDrop={(files) => {
-                        const validFiles = files.filter(f => f instanceof File);
+                        const validFiles = files.filter(
+                          (f) => f instanceof File,
+                        );
                         form.setFieldValue("dateOfBirthFile", validFiles);
                         form.clearFieldError("dateOfBirthFile");
                       }}
@@ -236,7 +277,9 @@ export default function FormLayout() {
                       accept={["application/pdf", "image/png", "image/jpeg"]}
                     >
                       <Text>DOB Proof File (PDF/Image)</Text>
-                      {form.errors.dateOfBirthFile && <Text c="red">{form.errors.dateOfBirthFile}</Text>}
+                      {form.errors.dateOfBirthFile && (
+                        <Text c="red">{form.errors.dateOfBirthFile}</Text>
+                      )}
                     </Dropzone>
                   </Box>
                 </Flex>
@@ -247,19 +290,40 @@ export default function FormLayout() {
                 <Title order={6}>Parent Details</Title>
                 <Grid gutter="md">
                   <GridCol span={4}>
-                    <TextInput label="Father Name" required {...form.getInputProps("fatherName")} />
+                    <TextInput
+                      label="Father Name"
+                      required
+                      {...form.getInputProps("fatherName")}
+                    />
                   </GridCol>
                   <GridCol span={4}>
-                    <TextInput label="Mother Name" required {...form.getInputProps("motherName")} />
+                    <TextInput
+                      label="Mother Name"
+                      required
+                      {...form.getInputProps("motherName")}
+                    />
                   </GridCol>
                   <GridCol span={4}>
-                    <TextInput label="Email" type="email" required {...form.getInputProps("parentEmail")} />
+                    <TextInput
+                      label="Email"
+                      type="email"
+                      required
+                      {...form.getInputProps("parentEmail")}
+                    />
                   </GridCol>
                   <GridCol span={4}>
-                    <TextInput label="Parent Phone" required {...form.getInputProps("parentPhone")} />
+                    <TextInput
+                      label="Parent Phone"
+                      required
+                      {...form.getInputProps("parentPhone")}
+                    />
                   </GridCol>
                   <GridCol span={4}>
-                    <TextInput label="Alternate Phone" required {...form.getInputProps("altParentPhone")} />
+                    <TextInput
+                      label="Alternate Phone"
+                      required
+                      {...form.getInputProps("altParentPhone")}
+                    />
                   </GridCol>
                 </Grid>
               </Paper>
@@ -269,25 +333,46 @@ export default function FormLayout() {
                 <Title order={6}>Emergency Details</Title>
                 <Grid gutter="md">
                   <GridCol span={4}>
-                    <TextInput label="Guardian Name" required {...form.getInputProps("guardianName")} />
+                    <TextInput
+                      label="Guardian Name"
+                      required
+                      {...form.getInputProps("guardianName")}
+                    />
                   </GridCol>
                   <GridCol span={4}>
-                    <TextInput label="Guardian Phone Number" required {...form.getInputProps("guardianPhoneNumber")} />
+                    <TextInput
+                      label="Guardian Phone Number"
+                      required
+                      {...form.getInputProps("guardianPhoneNumber")}
+                    />
                   </GridCol>
                   <GridCol span={4}>
                     <DateInput
                       label="Admission Date"
                       required
                       value={form.values.admissionDate}
-                      onChange={(value) => form.setFieldValue("admissionDate", value ? new Date(value) : null)}
+                      onChange={(value) =>
+                        form.setFieldValue(
+                          "admissionDate",
+                          value ? new Date(value) : null,
+                        )
+                      }
                       error={form.errors.admissionDate}
                     />
                   </GridCol>
                   <GridCol span={4}>
-                    <TextInput label="Admission Fee" type="number" required {...form.getInputProps("admissionFee")} />
+                    <TextInput
+                      label="Admission Fee"
+                      type="number"
+                      required
+                      {...form.getInputProps("admissionFee")}
+                    />
                   </GridCol>
                   <GridCol span={4}>
-                    <TextInput label="PEN Number (optional)" {...form.getInputProps("penNumber")} />
+                    <TextInput
+                      label="PEN Number (optional)"
+                      {...form.getInputProps("penNumber")}
+                    />
                   </GridCol>
                 </Grid>
               </Paper>
@@ -304,7 +389,7 @@ export default function FormLayout() {
 
               {/* Submit */}
               <Flex justify="flex-end">
-                <Button type="submit" color="dark" size="sm" style={{ width: "120px" }}>
+                <Button type="submit" size="sm" style={{ width: "120px" }}>
                   Save
                 </Button>
               </Flex>
@@ -316,7 +401,8 @@ export default function FormLayout() {
               )}
               {mutation.isError && (
                 <Notification color="red" title="Error">
-                  Submission failed: {mutation.error?.message || "Unknown error"}
+                  Submission failed:{" "}
+                  {mutation.error?.message || "Unknown error"}
                 </Notification>
               )}
             </Stack>
